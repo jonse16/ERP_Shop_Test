@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>AD_UNIT_ID_FOR_BANNER_TEST</key>
+	<string>ca-app-pub-3940256099942544/2934735716</string>
+	<key>AD_UNIT_ID_FOR_INTERSTITIAL_TEST</key>
+	<string>ca-app-pub-3940256099942544/4411468910</string>
+	<key>CLIENT_ID</key>
+	<string>348044304137-dmp9l70jasqm4h5q12q1i3jj0fmi4vn3.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.348044304137-dmp9l70jasqm4h5q12q1i3jj0fmi4vn3</string>
+	<key>API_KEY</key>
+	<string>AIzaSyBGMqPbLU8Wuq7wQdoZ-K1iyB17HhkzXew</string>
+	<key>GCM_SENDER_ID</key>
+	<string>348044304137</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.roko.ShopERP</string>
+	<key>PROJECT_ID</key>
+	<string>shoperp-d7e59</string>
+	<key>STORAGE_BUCKET</key>
+	<string>shoperp-d7e59.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<true/>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false/>
+	<key>IS_APPINVITE_ENABLED</key>
+	<false/>
+	<key>IS_GCM_ENABLED</key>
+	<true/>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true/>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:348044304137:ios:f359ea7330d28b0b</string>
+	<key>DATABASE_URL</key>
+	<string>https://shoperp-d7e59.firebaseio.com</string>
+</dict>
+</plist>

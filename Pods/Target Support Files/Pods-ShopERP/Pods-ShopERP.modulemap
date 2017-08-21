@@ -1,0 +1,6 @@
+framework module Pods_ShopERP {
+  umbrella header "Pods-ShopERP-umbrella.h"
+
+  export *
+  module * { export * }
+}
