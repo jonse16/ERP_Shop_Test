@@ -687,7 +687,7 @@ class DataService{
         ref = Database.database().reference()
         print("start getMessage() ============")
         loadIngMessage = true
-        let result =  self.ref?.child("message").child(self.companyId).child("product")
+        let result =  self.ref?.child("message").child(self.companyId).child("product").queryOrdered(byChild: "careteDateTime")
         result?.observe(.value, with: {
             (snapshot: DataSnapshot) in
             self.messageReadHistorys.removeAll()
@@ -703,12 +703,52 @@ class DataService{
                     parserMessageReadHistory.type = "product"
                     parserMessageReadHistory.type_id = nowKey!
                     self.messageReadHistorys.append(parserMessageReadHistory)
+                    self.messageReadHistorys.reverse()
                 }
                 self.loadIngMessage = false
             }
         })
         print("end getMessage() ============")
     }
+    
+    var messageReadLastUpdateTime = [String:Date]()
+    var loadIngMessageReadLastUpdateTime = false
+    func getMessageReadLastUpdateTime(){
+        ref = Database.database().reference()
+        print("start getMessageReadLastUpdateTime() ============")
+        loadIngMessageReadLastUpdateTime = true
+        let result = self.ref?.child("message_read").child(companyId).child((currentUser?.uid)!)
+        result?.observe(.value, with: {
+            (snapshot: DataSnapshot) in
+            self.messageReadLastUpdateTime.removeAll()
+            if snapshot.childrenCount == 0{
+                self.loadIngMessageReadLastUpdateTime = false
+            }else{
+                let dataFormate = DateFormatter()
+                dataFormate.dateFormat = "yyyy-MM-dd HH:mm:ss"
+                let enumerator = snapshot.children
+                while let rest = enumerator.nextObject() as? DataSnapshot {
+                    var nowKey = ""
+                    nowKey = String(rest.key)
+                    switch nowKey {
+                    case "product":
+                        let lastUpdateTime = rest.value as! Int
+                        let timestemp = lastUpdateTime / 1000
+                        let lastUpdateDateTime = Date(timeIntervalSince1970: TimeInterval(timestemp))
+                        dataFormate.timeZone = TimeZone.current
+                        let p = dataFormate.string(from: lastUpdateDateTime)
+                        self.messageReadLastUpdateTime["product"] = dataFormate.date(from: p)!
+                        break;
+                    default: break
+                    }
+                }
+                self.loadIngMessageReadLastUpdateTime = false
+            }
+        })
+        print("end getMessageReadLastUpdateTime() ============")
+    }
+    
+    //    ref?.child("message_read").child(companyId).child("product").child((currentUser?.uid)!)
     
     //=================================================================================================
     var createUserIsRunning = false
@@ -917,7 +957,16 @@ class DataService{
         print("deleteOrder() end ======")
     }
     
-    
+    var updateMessageReadIsRunning = false
+    func updateMessageRead(type:String){
+        print("updateMessageRead() start ======")
+        updateMessageReadIsRunning = true
+        ref = Database.database().reference()
+        let timeInterval = NSDate().timeIntervalSince1970
+        let lastUpdateTime = Int(timeInterval * 1000)
+        ref?.child("message_read").child(companyId).child((currentUser?.uid)!).setValue([type:lastUpdateTime])
+        print("updateMessageRead() end ======")
+    }
     //==============================================================================================
     func realmWriteMessageReadHistory(messageReadHistory:MessageReadHistory){
         let realm = try! Realm()

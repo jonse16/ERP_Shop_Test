@@ -57,4 +57,20 @@ class Message{
         let request = UNNotificationRequest(identifier: nowString, content: content, trigger: trigger)
         UNUserNotificationCenter.current().add(request, withCompletionHandler: nil)
     }
+    
+    func clearNotificationNumber(){
+        print("clearNotificationNumber() !!")
+        let content = UNMutableNotificationContent()
+        content.title = ""
+        content.subtitle = ""
+        content.body = ""
+        content.badge = -1
+        let now = Date()
+        let df =  DateFormatter()
+        df.dateFormat = "HH:mm:ss:SSS"
+        let nowString = df.string(from: now)
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 7, repeats: false)
+        let request = UNNotificationRequest(identifier: nowString, content: content, trigger: trigger)
+        UNUserNotificationCenter.current().add(request, withCompletionHandler: nil)
+    }
 }

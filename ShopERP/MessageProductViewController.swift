@@ -12,7 +12,9 @@ class MessageProductViewController: UIViewController, UITableViewDelegate, UITab
     
     let dataService = DataService.sharedInstance()
     let message = Message.sharedInstance()
+    let viewSetting = ViewSetting.sharedInstance()
     let dataFormate = DateFormatter()
+    var productMessageReadLastUpdateTime:Date? = nil
     
     
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -29,29 +31,43 @@ class MessageProductViewController: UIViewController, UITableViewDelegate, UITab
         dataFormate.dateFormat = "yyyy-MM-dd HH:mm:ss"
         cell?.body.text = mrh.body
         cell?.time.text = dataFormate.string(from: mrh.createDateTime)
+        
+        if productMessageReadLastUpdateTime != nil{
+            if mrh.createDateTime > productMessageReadLastUpdateTime!{
+                cell?.body.textColor = viewSetting.styleColor
+                cell?.time.textColor = viewSetting.styleColor
+            }else{
+                cell?.body.textColor = UIColor.black
+                cell?.time.textColor = UIColor.black
+            }
+        }else{
+            cell?.body.textColor = viewSetting.styleColor
+            cell?.time.textColor = viewSetting.styleColor
+        }
         return cell!
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
+        productMessageReadLastUpdateTime = dataService.messageReadLastUpdateTime["product"]
+        dataService.updateMessageRead(type: "product")
+        UIApplication.shared.applicationIconBadgeNumber = 0
     }
-
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
     
-
+    
     /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
+     // MARK: - Navigation
+     
+     // In a storyboard-based application, you will often want to do a little preparation before navigation
+     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+     // Get the new view controller using segue.destinationViewController.
+     // Pass the selected object to the new view controller.
+     }
+     */
+    
 }

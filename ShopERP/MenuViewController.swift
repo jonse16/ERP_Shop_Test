@@ -13,7 +13,7 @@ class MenuViewController: UIViewController, UICollectionViewDelegate, UICollecti
     
     @IBOutlet weak var collectionView: UICollectionView!
     
-    let allFunction = ["結帳","訂單列表","商品","訊息","業績","報表","組織","登出"]
+    var allFunction = ["結帳","訂單列表","商品","訊息","業績","報表","組織","登出"]
     
     let color = [UIColor(red: 232/255, green: 122/255, blue: 144/255, alpha: 1.0),
                  UIColor(red: 180/255, green: 129/255, blue: 187/255, alpha: 1.0),
@@ -31,6 +31,7 @@ class MenuViewController: UIViewController, UICollectionViewDelegate, UICollecti
     var viewSetting = ViewSetting.sharedInstance()
     
     var timer:Timer!
+    var messageTimer:Timer!
     
     var performanceType = ""
     
@@ -47,6 +48,7 @@ class MenuViewController: UIViewController, UICollectionViewDelegate, UICollecti
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        print("allFunction.count ==================\(allFunction.count)")
         return allFunction.count
     }
     
@@ -190,6 +192,64 @@ class MenuViewController: UIViewController, UICollectionViewDelegate, UICollecti
         dataService.getCompanyAllUser()
         // Do any additional setup after loading the view.
         dataService.getMessage()
+        dataService.getMessageReadLastUpdateTime()
+        
+        self.checkGetMessageInfoFinishCount = 0
+        self.messageTimer = Timer.scheduledTimer(timeInterval: 0.5,
+                                                 target: self,
+                                                 selector: #selector(self.checkGetMessageInfoFinish),
+                                                 userInfo: nil,
+                                                 repeats: true)
+    }
+    
+    var checkGetMessageInfoFinishCount = 0
+    func checkGetMessageInfoFinish(){
+        if checkGetMessageInfoFinishCount == 20{
+            messageTimer.invalidate()
+            print("checkGetMessageInfoFinishCount == 20")
+            message.popAlert(title: "網路錯誤", message: "連線逾時 請檢查網路 or 重新執行 ", uiViewController: self)
+            return;
+        }else {
+            if dataService.loadIngMessage == false && dataService.loadIngMessageReadLastUpdateTime == false {
+                messageTimer.invalidate()
+                let messageReadHistorys = dataService.messageReadHistorys
+                if messageReadHistorys.isEmpty == false{
+                    let dataFormate = DateFormatter()
+                    dataFormate.dateFormat = "yyyy-MM-dd HH:mm:ss"
+                    var count = 0
+                    let messageReadLastUpdateTime = dataService.messageReadLastUpdateTime
+                    for item in messageReadHistorys{
+                        if let last = messageReadLastUpdateTime[item.type]{                            
+                            if item.createDateTime > last{
+                                count = count+1;
+                            }
+                        }else{
+                            count = count+1;
+                        }
+                    }
+                    
+                    if count > 0{
+                        var newTitle = ""
+                        if count > 100{
+                            newTitle = self.allFunction[3]+"("+String(count)+"+)"
+                        }else{
+                            newTitle = self.allFunction[3]+"("+String(count)+")"
+                        }
+                        
+                        var index = 0
+                        //順序是相反的！！
+                        for item in collectionView.visibleCells{
+                            if index == 7{
+                                let cell = item as? MenuCollcetionCellController
+                                cell!.button.setTitle(newTitle, for: .normal)
+                            }
+                            index += 1;
+                        }
+                    }
+                }
+            }
+        }
+        checkGetMessageInfoFinishCount += 1
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {

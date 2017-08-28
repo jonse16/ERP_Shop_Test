@@ -41,7 +41,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate{
             
             // For iOS 10 data message (sent via FCM)
             Messaging.messaging().delegate = self
-            
         } else {
             let settings: UIUserNotificationSettings =
                 UIUserNotificationSettings(types: [.alert, .badge, .sound], categories: nil)
@@ -70,7 +69,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate{
         // TODO: Handle data of notification
         // Print message ID.
         if let messageID = userInfo[gcmMessageIDKey] {
-            print("Message ID: \(messageID)")
+            print("Message 1 ID: \(messageID)")
         }
         
         // Print full message.
@@ -84,7 +83,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate{
         // TODO: Handle data of notification
         // Print message ID.
         if let messageID = userInfo[gcmMessageIDKey] {
-            print("Message ID: \(messageID)")
+            print("Message 2 ID: \(messageID)")
         }
         
         // Print full message.
@@ -161,11 +160,13 @@ extension AppDelegate : UNUserNotificationCenterDelegate {
         let userInfo = notification.request.content.userInfo
         // Print message ID.
         if let messageID = userInfo[gcmMessageIDKey] {
-            print("Message ID: \(messageID)")
+            print("Message 3 ID: \(messageID)")
         }
         
         // Print full message.
         print("userInfo 3 = \(userInfo)")
+        
+        print("notification.request.content = \(notification.request.content)")
         
         // Change this to your preferred presentation option
         // 設置通知的選項
@@ -178,7 +179,7 @@ extension AppDelegate : UNUserNotificationCenterDelegate {
         let userInfo = response.notification.request.content.userInfo
         // Print message ID.
         if let messageID = userInfo[gcmMessageIDKey] {
-            print("Message ID: \(messageID)")
+            print("Message 4 ID: \(messageID)")
         }
         
         // Print full message.

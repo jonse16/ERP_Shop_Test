@@ -279,8 +279,7 @@ class LoginViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        maskActive.startAnimating()
-        
+        maskActive.startAnimating()        
         // Do any additional setup after loading the view.
     }
     
