@@ -147,6 +147,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate{
         print("Disconnected from FCM.")
     }
     // [END disconnect_from_fcm]
+    
+    func application(_ application: UIApplication, supportedInterfaceOrientationsFor window: UIWindow?) -> UIInterfaceOrientationMask {
+        var orientation: UIInterfaceOrientationMask!
+        orientation = [UIInterfaceOrientationMask.landscape]
+        return orientation
+    }
 }
 
 // [START ios_10_message_handling]
