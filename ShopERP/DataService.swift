@@ -369,6 +369,7 @@ class DataService{
     func getReportFromOrder(year:String, month:String, day:String, userId:String){
         ref = Database.database().reference()
         print("start getReportFromOrder() ============")
+        print("start getReportFromOrder() userId = \(userId)")
         loadIngReport = true
         if companyId != ""{
             self.ref?.child("order/alive").observeSingleEvent(of: .value, with: {
@@ -376,26 +377,46 @@ class DataService{
                 if snapshot.hasChild(self.companyId){
                     //有了  判斷是否 被刪除 or 停用！！
                     self.report.removeAll()
-                    let result =  self.ref?.child("order/alive").child(self.companyId).child(year).child(month).child(day)
                     if userId != ""{
-                        result?.queryOrdered(byChild: "uid").queryEqual(toValue: userId)
-                    }
-                    result?.observe(.value, with: {
-                        (snapshot: DataSnapshot) in
-                        print("getReportFromOrder snapshot.childrenCount = \(snapshot.childrenCount)")
-                        if snapshot.childrenCount == 0{
-                            self.loadIngReport = false
-                        }else{
-                            let enumerator = snapshot.children
-                            while let rest = enumerator.nextObject() as? DataSnapshot {
-                                let data = snapshot.childSnapshot(forPath: String(rest.key))
-                                let parserReport = Report()
-                                parserReport.converToReport(snapshot: data)
-                                self.report.append(parserReport)
+                        let result = self.ref?.child("order/alive").child(self.companyId).child(year).child(month).child(day).queryOrdered(byChild: "uid").queryEqual(toValue: userId)
+                        result?.observe(.value, with: {
+                            (snapshot: DataSnapshot) in
+                            print("getReportFromOrder snapshot.childrenCount = \(snapshot.childrenCount)")
+                            if snapshot.childrenCount == 0{
+                                self.loadIngReport = false
+                            }else{
+                                let enumerator = snapshot.children
+                                while let rest = enumerator.nextObject() as? DataSnapshot {
+                                    let data = snapshot.childSnapshot(forPath: String(rest.key))
+                                    let parserReport = Report()
+                                    parserReport.converToReport(snapshot: data)
+                                    self.report.append(parserReport)
+                                }
+                                self.loadIngReport = false
                             }
-                            self.loadIngReport = false
-                        }
-                    })
+                        })
+                    }else{
+                        let result = self.ref?.child("order/alive").child(self.companyId).child(year).child(month).child(day)
+                        result?.observe(.value, with: {
+                            (snapshot: DataSnapshot) in
+                            print("getReportFromOrder snapshot.childrenCount = \(snapshot.childrenCount)")
+                            if snapshot.childrenCount == 0{
+                                self.loadIngReport = false
+                            }else{
+                                let enumerator = snapshot.children
+                                while let rest = enumerator.nextObject() as? DataSnapshot {
+                                    let data = snapshot.childSnapshot(forPath: String(rest.key))
+                                    let parserReport = Report()
+                                    parserReport.converToReport(snapshot: data)
+                                    self.report.append(parserReport)
+                                }
+                                self.loadIngReport = false
+                            }
+                        })
+                    }
+                    
+                    
+                    
                 }else{
                     self.loadIngReport = false
                 }
